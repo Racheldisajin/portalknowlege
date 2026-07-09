@@ -12,7 +12,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen relative overflow-hidden flex flex-col justify-between">
+    <body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen relative overflow-x-hidden flex flex-col justify-between">
         
         <!-- Glowing background spots -->
         <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>

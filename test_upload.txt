@@ -1,3 +1,0 @@
-Halo Antigravity! Ini adalah dokumen teks percobaan untuk fitur ekstraksi teks portal knowledge news.
-Dokumen ini dibuat secara otomatis untuk memverifikasi fungsionalitas unggah file dan parsing data teks ke database.
-Selesai!
