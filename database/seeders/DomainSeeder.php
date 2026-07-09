@@ -10,8 +10,8 @@ class DomainSeeder extends Seeder
 {
     public function run(): void
     {
-        Domain::create(['name' => 'Programming']);
-        Domain::create(['name' => 'Design']);
-        Domain::create(['name' => 'DevOps']);
+        Domain::create(['name' => 'Programming', 'slug' => 'programming']);
+        Domain::create(['name' => 'Design', 'slug' => 'design']);
+        Domain::create(['name' => 'DevOps', 'slug' => 'devops']);
     }
 }
