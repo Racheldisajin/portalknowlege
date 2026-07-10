@@ -18,8 +18,9 @@ new #[Layout('layouts.app')] class extends Component {
     #[Rule('nullable|string')]
     public string $text = '';
 
-    #[Rule('nullable|file|mimes:jpg,jpeg,png,webp,pdf,docx,xlsx,pptx,txt,md,markdown|max:10240')]
-    public $file;
+    public $files = []; // Handles the temporary files uploaded by Livewire
+
+    public array $uploadedFiles = []; // Holds the list of files to save: [['path' => ..., 'name' => ..., 'text' => ..., 'is_image' => ...]]
 
     #[Rule('required|array')]
     public array $domains = [];
@@ -34,30 +35,86 @@ new #[Layout('layouts.app')] class extends Component {
         $this->domainList = Domain::all();
     }
 
-    public function updatedFile(): void
+    public function updatedFiles(): void
     {
-        $this->validateOnly('file');
+        $this->validate([
+            'files.*' => 'file|mimes:jpg,jpeg,png,webp,gif,pdf,doc,docx,xls,xlsx,pptx,txt,md,markdown,xml,mp4,mov,avi,mkv,webm|max:10240'
+        ]);
         
         $this->isExtracting = true;
-        $this->extractionStatus = 'Sedang mengekstrak teks dari file...';
+        $this->extractionStatus = 'Sedang memproses berkas...';
 
         try {
             $extractor = new DocumentTextExtractor();
-            $extractedText = $extractor->extract($this->file);
             
-            // Prefill title if empty
-            if (empty($this->title)) {
-                $originalName = $this->file->getClientOriginalName();
-                $this->title = pathinfo($originalName, PATHINFO_FILENAME);
+            foreach ($this->files as $file) {
+                $originalName = $file->getClientOriginalName();
+                $extension = strtolower($file->getClientOriginalExtension());
+                $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+
+                // 1. Extract text first (while file is accessible locally)
+                $extractedText = '';
+                try {
+                    $extractedText = $extractor->extract($file);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error("Gagal mengekstrak teks untuk {$originalName}: " . $e->getMessage());
+                }
+
+                // 2. Store file based on type
+                $storedPath = '';
+                if ($isImage) {
+                    // Images are stored locally on the project
+                    $storedPath = $file->store('knowledge', 'public');
+                } else {
+                    // All non-images are stored in RayCloud
+                    $rayData = $extractor->uploadToRayCloud($file->getRealPath());
+                    $storedPath = $rayData['url'];
+                }
+
+                $this->uploadedFiles[] = [
+                    'name' => $originalName,
+                    'path' => $storedPath,
+                    'text' => $extractedText,
+                    'is_image' => $isImage,
+                ];
+
+                // Auto-fill title if empty
+                if (empty($this->title)) {
+                    $this->title = pathinfo($originalName, PATHINFO_FILENAME);
+                }
             }
 
-            $this->text = $extractedText;
             $this->extractionStatus = 'Ekstraksi teks berhasil!';
         } catch (\Exception $e) {
-            $this->addError('file', $e->getMessage());
+            $this->addError('files', $e->getMessage());
             $this->extractionStatus = '';
         } finally {
             $this->isExtracting = false;
+            $this->files = []; // Reset temporary file uploads
+        }
+    }
+
+    public function removeUploadedFile(int $index): void
+    {
+        if (isset($this->uploadedFiles[$index])) {
+            $fileData = $this->uploadedFiles[$index];
+
+            try {
+                if ($fileData['is_image']) {
+                    // Delete local image
+                    Storage::disk('public')->delete($fileData['path']);
+                } else {
+                    // Delete from RayCloud
+                    $urlPath = parse_url($fileData['path'], PHP_URL_PATH);
+                    $path = preg_replace('/^\/files\//', '', $urlPath);
+                    DocumentTextExtractor::deleteFromRayCloud($path);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Gagal menghapus berkas saat pembatalan: " . $e->getMessage());
+            }
+
+            unset($this->uploadedFiles[$index]);
+            $this->uploadedFiles = array_values($this->uploadedFiles);
         }
     }
 
@@ -65,28 +122,28 @@ new #[Layout('layouts.app')] class extends Component {
     {
         $this->validate();
 
-        // Safeguard: Extract text if text is empty but a file is uploaded
-        if ($this->file && empty($this->text)) {
-            try {
-                $extractor = new DocumentTextExtractor();
-                $this->text = $extractor->extract($this->file);
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::warning('Extraction failed on save safeguard: ' . $e->getMessage());
-            }
-        }
-
-        $filePath = null;
-        if ($this->file) {
-            $filePath = $this->file->store('knowledge', 'public');
+        // Concatenate all file texts if main text is empty
+        $combinedText = $this->text;
+        if (empty($combinedText) && !empty($this->uploadedFiles)) {
+            $texts = array_column($this->uploadedFiles, 'text');
+            $combinedText = implode("\n\n---\n\n", array_filter($texts));
         }
 
         $knowledge = Knowledge::create([
             'title' => $this->title,
-            'text' => $this->text,
-            'file_path' => $filePath,
+            'text' => $combinedText,
+            'file_path' => $this->uploadedFiles[0]['path'] ?? null, // backward compatibility
         ]);
 
         $knowledge->domains()->attach($this->domains);
+
+        // Save related files
+        foreach ($this->uploadedFiles as $uf) {
+            $knowledge->files()->create([
+                'file_path' => $uf['path'],
+                'text' => $uf['text'],
+            ]);
+        }
 
         $this->redirect(route('knowledge.index'), navigate: true);
     }
@@ -105,12 +162,12 @@ new #[Layout('layouts.app')] class extends Component {
                     <form wire:submit="save" class="mt-6 space-y-6">
                         <!-- Premium Dropzone Box -->
                         <div>
-                            <x-input-label for="file" value="Upload File Pendukung (Gambar, PDF, Word, Excel, PowerPoint, Teks)" />
+                            <x-input-label for="files" value="Upload File Pendukung (Gambar, PDF, Word, Excel, PowerPoint, Teks)" />
                             
                             <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-300 px-6 py-8 bg-gray-50 hover:bg-gray-100/70 hover:border-indigo-400 transition duration-150 ease-in-out relative group">
                                 <div class="text-center">
                                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 group-hover:scale-110 transition duration-150 ease-in-out">
-                                        @if ($file && !$isExtracting)
+                                        @if (!empty($uploadedFiles) && !$isExtracting)
                                             <svg class="h-6 w-6 text-emerald-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
@@ -126,27 +183,27 @@ new #[Layout('layouts.app')] class extends Component {
                                         @endif
                                     </div>
                                     <div class="mt-3 flex text-sm leading-6 text-gray-600 justify-center">
-                                        <label for="file" class="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                                            <span>Pilih file untuk diunggah</span>
-                                            <input wire:model="file" id="file" type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,.docx,.xlsx,.pptx,.txt,.md,.markdown" class="sr-only" />
+                                        <label for="files" class="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                                            <span>Pilih berkas-berkas untuk diunggah</span>
+                                            <input wire:model="files" id="files" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.xls,.xlsx,.pptx,.txt,.md,.markdown,.xml,.mp4,.mov,.avi,.mkv,.webm" class="sr-only" />
                                         </label>
                                     </div>
                                     <p class="text-xs leading-5 text-gray-500 mt-1">
-                                        Gambar, PDF, DOCX, XLSX, PPTX, TXT, MD (Maksimal 10MB)
+                                        Gambar, Video, PDF, DOC/DOCX, XLS/XLSX, PPTX, TXT, MD, XML (Maksimal 10MB per file)
                                     </p>
                                 </div>
                             </div>
-
+ 
                             <!-- Uploading and Extraction State UI -->
                             <div class="mt-2 text-sm">
-                                <div wire:loading wire:target="file" class="flex items-center gap-2 text-indigo-600 font-medium">
+                                <div wire:loading wire:target="files" class="flex items-center gap-2 text-indigo-600 font-medium">
                                     <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    <span>Sedang mengunggah file...</span>
+                                    <span>Sedang mengunggah berkas...</span>
                                 </div>
-
+ 
                                 @if ($isExtracting)
                                     <div class="flex items-center gap-2 text-indigo-600 font-medium animate-pulse">
                                         <svg class="animate-spin h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -156,18 +213,40 @@ new #[Layout('layouts.app')] class extends Component {
                                         <span>{{ $extractionStatus }}</span>
                                     </div>
                                 @endif
-
-                                @if ($file && !$isExtracting && $extractionStatus)
-                                    <div class="text-emerald-600 font-semibold flex items-center gap-1.5">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                        </svg>
-                                        <span>{{ $extractionStatus }} ({{ $file->getClientOriginalName() }})</span>
-                                    </div>
-                                @endif
                             </div>
+ 
+                            <x-input-error class="mt-2" :messages="$errors->get('files')" />
 
-                            <x-input-error class="mt-2" :messages="$errors->get('file')" />
+                            <!-- List of Uploaded Files and Their Texts -->
+                            @if (!empty($uploadedFiles))
+                                <div class="mt-4 space-y-4">
+                                    <h3 class="font-semibold text-sm text-gray-700">Berkas Terunggah:</h3>
+                                    @foreach ($uploadedFiles as $index => $uf)
+                                        <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3 relative">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-2">
+                                                    @if ($uf['is_image'])
+                                                        <span class="px-2 py-0.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md">Lokal (Gambar)</span>
+                                                    @else
+                                                        <span class="px-2 py-0.5 text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 rounded-md">RayCloud (Dokumen)</span>
+                                                    @endif
+                                                    <span class="text-sm font-medium text-gray-800 truncate max-w-xs" title="{{ $uf['name'] }}">{{ $uf['name'] }}</span>
+                                                </div>
+                                                <button type="button" wire:click="removeUploadedFile({{ $index }})" class="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1">
+                                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs text-gray-500 font-medium">Teks yang diekstraksi untuk berkas ini:</label>
+                                                <textarea wire:model="uploadedFiles.{{ $index }}.text" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 font-mono text-xs"></textarea>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
 
                         <div>

@@ -17,6 +17,7 @@ class DocumentTextExtractor
         'jpeg' => 'image/jpeg',
         'png' => 'image/png',
         'webp' => 'image/webp',
+        'gif' => 'image/gif',
         'pdf' => 'application/pdf',
         'txt' => 'text/plain',
         'md' => 'text/markdown',
@@ -24,6 +25,14 @@ class DocumentTextExtractor
         'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'doc' => 'application/msword',
+        'xls' => 'application/vnd.ms-excel',
+        'xml' => 'application/xml',
+        'mp4' => 'video/mp4',
+        'mov' => 'video/quicktime',
+        'avi' => 'video/x-msvideo',
+        'mkv' => 'video/x-matroska',
+        'webm' => 'video/webm',
     ];
 
     /**
@@ -47,6 +56,7 @@ class DocumentTextExtractor
             case 'jpeg':
             case 'png':
             case 'webp':
+            case 'gif':
                 return $this->extractImageOcr($realPath, $file->getClientOriginalName());
 
             case 'pdf':
@@ -64,7 +74,17 @@ class DocumentTextExtractor
             case 'txt':
             case 'md':
             case 'markdown':
+            case 'xml':
                 return file_get_contents($realPath);
+
+            case 'doc':
+            case 'xls':
+            case 'mp4':
+            case 'mov':
+            case 'avi':
+            case 'mkv':
+            case 'webm':
+                return ''; // No text extraction support, but allowed to upload
 
             default:
                 throw new \Exception("Format file (.{$extension}) tidak didukung untuk ekstraksi teks.");
@@ -91,29 +111,91 @@ class DocumentTextExtractor
     }
 
     /**
+     * Upload a file to RayCloud.
+     *
+     * @param string $filePath
+     * @return array
+     * @throws \Exception
+     */
+    public function uploadToRayCloud(string $filePath): array
+    {
+        $baseUrl = env('RAYCLOUD_BASE_URL', 'https://raycorp.cloud');
+        $apiKey = env('RAYCLOUD_API_KEY');
+
+        if (empty($apiKey)) {
+            throw new \Exception("RayCloud API Key belum dikonfigurasi di file .env.");
+        }
+
+        $response = Http::withoutVerifying()
+            ->withHeaders([
+                'X-API-Key' => $apiKey
+            ])
+            ->asMultipart()
+            ->post($baseUrl . '/files/upload', [
+                'file' => fopen($filePath, 'r')
+            ]);
+
+        if (!$response->successful()) {
+            throw new \Exception("Gagal mengunggah berkas ke RayCloud: HTTP " . $response->status() . " " . $response->body());
+        }
+
+        $data = $response->json();
+        if (!isset($data['success']) || !$data['success']) {
+            throw new \Exception("Gagal mengunggah berkas ke RayCloud: " . ($data['message'] ?? 'Error tidak diketahui'));
+        }
+
+        return $data['data']; // Contains 'url', 'path', etc.
+    }
+
+    /**
+     * Delete a file from RayCloud.
+     *
+     * @param string $path
+     * @return bool
+     */
+    public static function deleteFromRayCloud(string $path): bool
+    {
+        $baseUrl = env('RAYCLOUD_BASE_URL', 'https://raycorp.cloud');
+        $apiKey = env('RAYCLOUD_API_KEY');
+
+        if (empty($apiKey)) {
+            Log::warning("RayCloud API Key belum dikonfigurasi. Tidak dapat menghapus berkas.");
+            return false;
+        }
+
+        $response = Http::withoutVerifying()
+            ->withHeaders([
+                'X-API-Key' => $apiKey
+            ])
+            ->delete($baseUrl . '/files/' . ltrim($path, '/'));
+
+        if (!$response->successful()) {
+            Log::warning("Gagal menghapus berkas dari RayCloud: " . $response->body());
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Extract text from Image using n8n OCR.
      */
     protected function extractImageOcr(string $filePath, string $originalName): string
     {
+        $rayData = null;
         try {
-            // Upload to catbox.moe to get a clean CDN direct download URL
-            $uploadResponse = Http::withoutVerifying()->asMultipart()->post('https://catbox.moe/user/api.php', [
-                'reqtype' => 'fileupload',
-                'fileToUpload' => fopen($filePath, 'r')
-            ]);
+            // Upload to RayCloud file storage temporarily to get a public URL
+            $rayData = $this->uploadToRayCloud($filePath);
+            $directUrl = $rayData['url'] ?? '';
 
-            if (!$uploadResponse->successful()) {
-                throw new \Exception("Gagal mengunggah gambar ke server CDN sementara.");
+            if (empty($directUrl)) {
+                throw new \Exception("Gagal mendapatkan URL gambar dari RayCloud.");
             }
 
-            $directUrl = trim($uploadResponse->body());
-
-            if (empty($directUrl) || !str_starts_with($directUrl, 'https://files.catbox.moe/')) {
-                throw new \Exception("Gagal mendapatkan URL publik gambar dari server sementara: " . $directUrl);
-            }
+            $ocrUrl = env('N8N_OCR_URL', 'https://n8n.raycorpgroup.com/webhook/ocr-extract');
 
             // Request OCR from n8n Raycorp
-            $ocrResponse = Http::withoutVerifying()->timeout(30)->post('https://n8n.raycorpgroup.com/webhook/ocr-extract', [
+            $ocrResponse = Http::withoutVerifying()->timeout(30)->post($ocrUrl, [
                 'text' => 'Tolong salin teks dari gambar ini ' . $directUrl
             ]);
 
@@ -148,6 +230,11 @@ class DocumentTextExtractor
         } catch (\Exception $e) {
             Log::error('OCR Error: ' . $e->getMessage());
             throw new \Exception("Gagal mengekstrak teks menggunakan OCR: " . $e->getMessage());
+        } finally {
+            // Cleanup the temporary image from RayCloud
+            if ($rayData && isset($rayData['path'])) {
+                self::deleteFromRayCloud($rayData['path']);
+            }
         }
     }
 
