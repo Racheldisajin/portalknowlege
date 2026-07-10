@@ -65,7 +65,7 @@ new #[Layout('layouts.app')] class extends Component {
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
         
         <!-- Header Section -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-teal-850 via-teal-900 to-slate-900 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-teal-800 via-teal-900 to-slate-900 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-teal-500/10 rounded-full blur-2xl"></div>
             <div class="absolute right-20 top-2 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
             

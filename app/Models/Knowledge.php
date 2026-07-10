@@ -13,4 +13,9 @@ class Knowledge extends Model
     {
         return $this->belongsToMany(Domain::class);
     }
+
+    public function files(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(KnowledgeFile::class);
+    }
 }

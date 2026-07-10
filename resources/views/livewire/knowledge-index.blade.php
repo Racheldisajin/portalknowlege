@@ -7,6 +7,9 @@ use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 
+use App\Models\KnowledgeFile;
+use App\Services\DocumentTextExtractor;
+
 new #[Layout('layouts.app')] class extends Component {
     use WithPagination;
 
@@ -27,13 +30,13 @@ new #[Layout('layouts.app')] class extends Component {
     public function updateStats(): void
     {
         $this->totalCount = Knowledge::count();
-        $this->fileCount = Knowledge::whereNotNull('file_path')->count();
+        $this->fileCount = KnowledgeFile::count();
         $this->domainCount = Domain::count();
     }
 
     public function withKnowledge()
     {
-        return Knowledge::with('domains')
+        return Knowledge::with(['domains', 'files'])
             ->when($this->search, fn($q) => $q->where('title', 'like', "%{$this->search}%"))
             ->when($this->domainFilter, fn($q) => $q->whereHas('domains', fn($q) => $q->where('domains.id', $this->domainFilter)))
             ->latest()
@@ -52,10 +55,24 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function delete(int $id): void
     {
-        $knowledge = Knowledge::findOrFail($id);
+        $knowledge = Knowledge::with('files')->findOrFail($id);
 
-        if ($knowledge->file_path) {
-            Storage::disk('public')->delete($knowledge->file_path);
+        foreach ($knowledge->files as $file) {
+            try {
+                $extension = strtolower(pathinfo($file->file_path, PATHINFO_EXTENSION));
+                $isImage = in_array($extension, ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+
+                if ($isImage) {
+                    Storage::disk('public')->delete($file->file_path);
+                } else {
+                    $urlPath = parse_url($file->file_path, PHP_URL_PATH);
+                    $path = preg_replace('/^\/files\//', '', $urlPath);
+                    DocumentTextExtractor::deleteFromRayCloud($path);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Gagal menghapus berkas saat menghapus knowledge: " . $e->getMessage());
+            }
+            $file->delete();
         }
 
         $knowledge->domains()->detach();
@@ -69,8 +86,8 @@ new #[Layout('layouts.app')] class extends Component {
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
         
         <!-- Welcome & Header Section -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-indigo-900 via-indigo-850 to-slate-900 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-505/10 rounded-full blur-2xl"></div>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-indigo-800 via-indigo-900 to-slate-900 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl"></div>
             <div class="absolute right-20 top-2 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
             
             <div class="space-y-1">
@@ -193,28 +210,42 @@ new #[Layout('layouts.app')] class extends Component {
                                     </div>
                                 </td>
                                 <td class="py-4 px-6">
-                                    @if ($k->file_path)
-                                        @php
-                                            $ext = strtolower(pathinfo($k->file_path, PATHINFO_EXTENSION));
-                                            
-                                            // Determine badge based on file extension
-                                            $badgeClasses = match ($ext) {
-                                                'pdf' => 'bg-red-50 text-red-700 border-red-100',
-                                                'docx', 'doc' => 'bg-blue-50 text-blue-700 border-blue-100',
-                                                'xlsx', 'xls' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
-                                                'pptx', 'ppt' => 'bg-orange-50 text-orange-700 border-orange-100',
-                                                'jpg', 'jpeg', 'png', 'webp' => 'bg-purple-50 text-purple-700 border-purple-100',
-                                                'txt', 'md', 'markdown' => 'bg-slate-50 text-slate-700 border-slate-200',
-                                                default => 'bg-slate-50 text-slate-600 border-slate-100',
-                                            };
-                                        @endphp
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border {{ $badgeClasses }}">
-                                            <!-- SVG icon indicators -->
-                                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                            </svg>
-                                            {{ strtoupper($ext) }}
-                                        </span>
+                                    @if ($k->files->isNotEmpty())
+                                        <div class="flex flex-wrap gap-1.5">
+                                            @foreach ($k->files as $file)
+                                                @php
+                                                    $ext = strtolower(pathinfo($file->file_path, PATHINFO_EXTENSION));
+                                                    
+                                                    // Determine badge based on file extension
+                                                    $badgeClasses = match ($ext) {
+                                                        'pdf' => 'bg-red-50 text-red-700 border-red-100',
+                                                        'docx', 'doc' => 'bg-blue-50 text-blue-700 border-blue-100',
+                                                        'xlsx', 'xls' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
+                                                        'pptx', 'ppt' => 'bg-orange-50 text-orange-700 border-orange-100',
+                                                        'jpg', 'jpeg', 'png', 'webp', 'gif' => 'bg-purple-50 text-purple-700 border-purple-100',
+                                                        'txt', 'md', 'markdown' => 'bg-slate-50 text-slate-700 border-slate-200',
+                                                        default => 'bg-slate-50 text-slate-600 border-slate-100',
+                                                    };
+
+                                                    $isRayCloud = str_starts_with($file->file_path, 'http');
+                                                    $targetUrl = $isRayCloud ? $file->file_path : asset('storage/' . $file->file_path);
+                                                @endphp
+                                                <a href="{{ $targetUrl }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border {{ $badgeClasses }} hover:scale-105 transition duration-100" title="{{ basename($file->file_path) }} (Klik untuk buka)">
+                                                    {{ strtoupper($ext) }}
+                                                    @if ($isRayCloud)
+                                                        <!-- RayCloud Cloud Icon -->
+                                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
+                                                        </svg>
+                                                    @else
+                                                        <!-- Local Home/Server Icon -->
+                                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 3h13.5m-13.5-6h13.5m-13.5-3h13.5m-13.5-3H9m-3.75 15H18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0018 3H6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 006 18z" />
+                                                        </svg>
+                                                    @endif
+                                                </a>
+                                            @endforeach
+                                        </div>
                                     @else
                                         <span class="text-xs text-slate-400 font-medium italic">Tidak ada berkas</span>
                                     @endif
