@@ -40,6 +40,9 @@ new class extends Component
                     <x-nav-link :href="route('domains.index')" :active="request()->routeIs('domains.*')" wire:navigate class="px-3 py-2 text-slate-300 hover:text-white rounded-lg transition font-semibold text-sm">
                         {{ __('Kategori Domain') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate class="px-3 py-2 text-slate-300 hover:text-white rounded-lg transition font-semibold text-sm">
+                        {{ __('Kelola User') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -96,6 +99,9 @@ new class extends Component
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('domains.index')" :active="request()->routeIs('domains.*')" wire:navigate class="rounded-xl text-slate-300 hover:text-white">
                 {{ __('Kategori Domain') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate class="rounded-xl text-slate-300 hover:text-white">
+                {{ __('Kelola User') }}
             </x-responsive-nav-link>
         </div>
 
