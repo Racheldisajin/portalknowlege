@@ -228,7 +228,7 @@ new #[Layout('layouts.app')] class extends Component {
                                                     };
 
                                                     $isRayCloud = str_starts_with($file->file_path, 'http');
-                                                    $targetUrl = $isRayCloud ? $file->file_path : asset('storage/' . $file->file_path);
+                                                    $targetUrl = $isRayCloud ? $file->file_path : route('local-files.show', ['path' => $file->file_path]);
                                                 @endphp
                                                 <a href="{{ $targetUrl }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border {{ $badgeClasses }} hover:scale-105 transition duration-100" title="{{ basename($file->file_path) }} (Klik untuk buka)">
                                                     {{ strtoupper($ext) }}

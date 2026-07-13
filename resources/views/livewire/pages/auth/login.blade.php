@@ -53,8 +53,8 @@ new #[Layout('layouts.guest')] class extends Component
             <x-input-error :messages="$errors->get('form.password')" class="mt-2 text-rose-400" style="padding-left: 12px;" />
         </div>
 
-        <!-- Remember Me & Forgot Password -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; padding: 0 4px;">
+        <!-- Remember Me -->
+        <div style="display: flex; align-items: center; margin-bottom: 28px; padding: 0 4px;">
             <div style="display: flex; align-items: center; gap: 8px;">
                 <input wire:model="form.remember" id="remember" type="checkbox" name="remember" 
                        style="width: 16px; height: 16px; accent-color: #6366f1; cursor: pointer; border-radius: 4px;" />
@@ -64,13 +64,6 @@ new #[Layout('layouts.guest')] class extends Component
                     {{ __('Keep me logged in') }}
                 </label>
             </div>
-            
-            <a href="{{ route('register') }}" wire:navigate 
-               style="color: #94a3b8; text-decoration: underline; font-size: 0.875rem; font-weight: 500; transition: color 0.2s;"
-               onmouseover="this.style.color='#f8fafc'"
-               onmouseout="this.style.color='#94a3b8'">
-                {{ __('Need an account?') }}
-            </a>
         </div>
 
         <!-- Action Button (Sign In) -->

@@ -18,6 +18,14 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('knowledge/create', 'knowledge-create')->name('knowledge.create');
     Volt::route('knowledge/{knowledge}/edit', 'knowledge-edit')->name('knowledge.edit');
     Volt::route('domains', 'domain-index')->name('domains.index');
+
+    Route::get('local-files/{path}', function ($path) {
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
+        if (!$disk->exists($path)) {
+            abort(404);
+        }
+        return response()->file($disk->path($path));
+    })->where('path', '.*')->name('local-files.show');
 });
 
 require __DIR__.'/auth.php';
