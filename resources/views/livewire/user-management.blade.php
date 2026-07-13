@@ -176,12 +176,12 @@ new #[Layout('layouts.app')] class extends Component
                             <label for="name" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 pl-1">Nama Lengkap</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                     </svg>
                                 </span>
                                 <input wire:model="name" id="name" type="text" placeholder="Masukkan nama lengkap"
-                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-10 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
+                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-11 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
                             </div>
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
                         </div>
@@ -191,12 +191,12 @@ new #[Layout('layouts.app')] class extends Component
                             <label for="email" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 pl-1">Alamat Email</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                     </svg>
                                 </span>
                                 <input wire:model="email" id="email" type="email" placeholder="contoh@domain.com"
-                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-10 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
+                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-11 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
                             </div>
                             <x-input-error :messages="$errors->get('email')" class="mt-1" />
                         </div>
@@ -206,12 +206,12 @@ new #[Layout('layouts.app')] class extends Component
                             <label for="password" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 pl-1">Password</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                     </svg>
                                 </span>
                                 <input wire:model="password" id="password" type="password" placeholder="Minimal 8 karakter"
-                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-10 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
+                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-11 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
                             </div>
                             <x-input-error :messages="$errors->get('password')" class="mt-1" />
                         </div>
@@ -221,12 +221,12 @@ new #[Layout('layouts.app')] class extends Component
                             <label for="password_confirmation" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 pl-1">Konfirmasi Password</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                    <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </span>
                                 <input wire:model="password_confirmation" id="password_confirmation" type="password" placeholder="Masukkan kembali password"
-                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-10 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
+                                       class="w-full bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl pl-11 pr-4 py-2.5 shadow-sm text-sm transition outline-none" />
                             </div>
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
                         </div>
@@ -243,46 +243,52 @@ new #[Layout('layouts.app')] class extends Component
                     </form>
                 </div>
 
-                <!-- Right panel: Users List Table -->
-                <div class="lg:col-span-2 space-y-5">
-                    
-                    <!-- Search & Stats Bar -->
-                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 border-t-4 border-t-indigo-500 p-4 flex items-center justify-between gap-4">
-                        <div class="relative w-full max-w-md">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </span>
-                            <input wire:model.live="search" type="text" placeholder="Cari nama atau email pengguna..."
-                                   class="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-2xl text-sm transition outline-none" />
-                        </div>
-                        <div class="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-1.5 shrink-0">
-                            Total: {{ count($this->withUsers()) }} Pengguna
-                        </div>
-                    </div>
-
-                    <!-- Users Table Card -->
+                <!-- Right panel: Unified Users Table Card -->
+                <div class="lg:col-span-2">
                     <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 border-t-4 border-t-emerald-500 overflow-hidden">
+                        
+                        <!-- Card Header & Search Toolbar -->
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-base">Daftar Pengguna</h3>
+                                <p class="text-xs text-slate-400 mt-0.5">Seluruh akun yang terdaftar dalam sistem</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <div class="relative w-full max-w-xs">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </span>
+                                    <input wire:model.live="search" type="text" placeholder="Cari nama atau email..."
+                                           class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 text-slate-800 rounded-xl text-xs transition outline-none" />
+                                </div>
+                                <div class="text-xs font-bold text-slate-500 bg-slate-100 border border-slate-200/50 rounded-xl px-3 py-1.5 shrink-0">
+                                    Total: {{ count($this->withUsers()) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Area -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-slate-600">
                                 <thead>
-                                    <tr class="bg-slate-50/50 border-b border-slate-100 text-left font-bold text-slate-400 uppercase tracking-widest text-[10px]">
-                                        <th class="py-4.5 px-6">Nama Pengguna</th>
-                                        <th class="py-4.5 px-6">Alamat Email</th>
-                                        <th class="py-4.5 px-6">Hak Akses</th>
-                                        <th class="py-4.5 px-6">Tanggal Terdaftar</th>
-                                        <th class="py-4.5 px-6 text-right">Aksi</th>
+                                    <tr class="bg-slate-50/40 border-b border-slate-100 text-left font-bold text-slate-400 uppercase tracking-widest text-[10px]">
+                                        <th class="py-4 px-6">Nama Pengguna</th>
+                                        <th class="py-4 px-6">Alamat Email</th>
+                                        <th class="py-4 px-6">Hak Akses</th>
+                                        <th class="py-4 px-6">Tanggal Terdaftar</th>
+                                        <th class="py-4 px-6 text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100">
                                     @forelse ($this->withUsers() as $user)
-                                        <tr class="hover:bg-slate-50/40 transition duration-150">
+                                        <tr class="hover:bg-slate-50/30 transition duration-150">
                                             <!-- Name -->
                                             <td class="py-4 px-6">
                                                 <div class="flex items-center gap-3">
                                                     @php
-                                                        // alternate colorful gradients based on user id
                                                         $gradient = $user->id % 2 === 0 
                                                             ? 'from-indigo-500 to-cyan-500' 
                                                             : 'from-fuchsia-500 to-indigo-500';
@@ -294,7 +300,7 @@ new #[Layout('layouts.app')] class extends Component
                                                         <span class="font-semibold text-slate-800 flex items-center">
                                                             {{ $user->name }}
                                                             @if ($user->id === auth()->id())
-                                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-indigo-500 text-white shadow-sm uppercase tracking-wider">Anda</span>
+                                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-600 text-white shadow-sm tracking-wider uppercase">Anda</span>
                                                             @endif
                                                         </span>
                                                         <span class="text-[10px] text-slate-400 font-medium">User ID: #{{ $user->id }}</span>
@@ -309,7 +315,7 @@ new #[Layout('layouts.app')] class extends Component
 
                                             <!-- Role Badge -->
                                             <td class="py-4 px-6">
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80">
                                                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                                                     Staff Akses
                                                 </span>
@@ -325,14 +331,14 @@ new #[Layout('layouts.app')] class extends Component
                                                 @if ($user->id !== auth()->id())
                                                     <button wire:confirm="Hapus pengguna ini secara permanen?" 
                                                             wire:click="deleteUser({{ $user->id }})" 
-                                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-slate-50 text-rose-600 rounded-xl hover:bg-rose-50 border border-slate-100 hover:border-rose-100 transition duration-150 cursor-pointer">
+                                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 border border-rose-100 hover:border-rose-200 transition duration-150 cursor-pointer">
                                                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                         </svg>
                                                         Hapus
                                                     </button>
                                                 @else
-                                                    <span class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold bg-slate-50 text-slate-400 rounded-xl border border-slate-100 select-none">
+                                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-slate-100/50 text-slate-400 rounded-xl border border-slate-200/50 select-none">
                                                         <svg class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                                         </svg>
