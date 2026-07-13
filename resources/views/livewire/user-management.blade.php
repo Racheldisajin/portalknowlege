@@ -226,7 +226,9 @@ new #[Layout('layouts.app')] class extends Component
                         <!-- Submit Button -->
                         <div class="pt-2">
                             <button type="submit"
-                                    class="w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white rounded-2xl py-3 px-4 font-bold text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5 transition duration-150 text-center cursor-pointer">
+                                    style="background: linear-gradient(135deg, #6366f1 0%, #06b6d4 50%, #10b981 100%); border: 0; padding: 12px 16px; border-radius: 16px; color: #ffffff; font-size: 0.875rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35); transition: all 0.2s; width: 100%; text-align: center; display: block;"
+                                    onmouseover="this.style.opacity='0.95'; this.style.transform='translateY(-1px)';"
+                                    onmouseout="this.style.opacity='1'; this.style.transform='translateY(0)';">
                                 Simpan & Aktifkan User
                             </button>
                         </div>
