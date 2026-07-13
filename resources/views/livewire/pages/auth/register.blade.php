@@ -37,10 +37,7 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <div style="margin-bottom: 28px;">
-        <h2 style="font-size: 2rem; font-weight: 800; color: #ffffff; letter-spacing: -0.025em; margin-bottom: 6px; font-family: 'Figtree', sans-serif;">Create account</h2>
-        <p style="color: #94a3b8; font-size: 0.95rem; font-weight: 500;">Please enter your details to sign up</p>
-    </div>
+
 
     <form wire:submit="register">
         <!-- Name -->
