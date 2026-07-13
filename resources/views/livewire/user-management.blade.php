@@ -60,35 +60,40 @@ new #[Layout('layouts.app')] class extends Component
 
 <div>
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <h2 class="font-extrabold text-2xl text-slate-800 tracking-tight leading-tight">
-                    {{ __('Kelola Akses Pengguna') }}
-                </h2>
-                <p class="text-sm text-slate-500 mt-0.5">Manajemen dan pembatasan hak akses akun internal Raycorp Portal</p>
-            </div>
-            <div class="flex items-center gap-2 bg-indigo-50/50 border border-indigo-100/50 rounded-2xl px-4 py-2 text-xs font-semibold text-indigo-700">
-                <svg class="h-4 w-4 text-indigo-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Registrasi Publik Nonaktif (Hidden System)
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 rounded-2xl shadow-xl text-white relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl"></div>
+            <div class="absolute right-20 top-2 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+            
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 relative z-10">
+                <div>
+                    <h2 class="font-extrabold text-2xl tracking-tight leading-tight">
+                        {{ __('Kelola Akses Pengguna') }}
+                    </h2>
+                    <p class="text-sm text-indigo-200 mt-1 font-medium">Manajemen dan pembatasan hak akses akun internal Raycorp Portal</p>
+                </div>
+                <div class="flex items-center gap-2 bg-indigo-500/20 border border-indigo-500/30 rounded-2xl px-4 py-2 text-xs font-semibold text-indigo-300">
+                    <svg class="h-4 w-4 text-indigo-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Registrasi Publik Nonaktif
+                </div>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8 bg-slate-50/30 min-h-[calc(100vh-4rem)]">
+    <div class="py-8 bg-slate-50/50 min-h-[calc(100vh-4rem)]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             
             <!-- Statistics Row -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Stat Card 1 -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100/80 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
+                <div class="bg-gradient-to-br from-indigo-50/70 via-white to-white rounded-2xl shadow-sm border border-indigo-100 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
                     <div class="space-y-1">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Pengguna</span>
-                        <div class="text-3xl font-black text-slate-800">{{ \App\Models\User::count() }}</div>
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Total Pengguna</span>
+                        <div class="text-3xl font-black text-indigo-600">{{ \App\Models\User::count() }}</div>
                         <p class="text-xs text-slate-500 font-medium">Akun terdaftar dalam sistem</p>
                     </div>
-                    <div class="p-3.5 bg-indigo-50 text-indigo-600 rounded-2xl">
+                    <div class="p-3.5 bg-indigo-100 text-indigo-600 rounded-2xl shadow-sm">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                         </svg>
@@ -96,16 +101,16 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
 
                 <!-- Stat Card 2 -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100/80 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
+                <div class="bg-gradient-to-br from-rose-50/70 via-white to-white rounded-2xl shadow-sm border border-rose-100 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
                     <div class="space-y-1">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Metode Registrasi</span>
+                        <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Metode Registrasi</span>
                         <div class="text-lg font-black text-rose-600 flex items-center gap-1.5 pt-1">
                             <span class="h-2 w-2 rounded-full bg-rose-500"></span>
                             Tertutup (Admin Only)
                         </div>
                         <p class="text-xs text-slate-500 font-medium">Hanya admin yang dapat mendaftarkan</p>
                     </div>
-                    <div class="p-3.5 bg-rose-50 text-rose-600 rounded-2xl">
+                    <div class="p-3.5 bg-rose-100 text-rose-600 rounded-2xl shadow-sm">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                         </svg>
@@ -113,16 +118,16 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
 
                 <!-- Stat Card 3 -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100/80 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
+                <div class="bg-gradient-to-br from-emerald-50/70 via-white to-white rounded-2xl shadow-sm border border-emerald-100 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
                     <div class="space-y-1">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Aktivitas Sistem</span>
+                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Aktivitas Sistem</span>
                         <div class="text-lg font-black text-emerald-600 flex items-center gap-1.5 pt-1">
                             <span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
                             Online & Secure
                         </div>
                         <p class="text-xs text-slate-500 font-medium">Bekerja pada database internal</p>
                     </div>
-                    <div class="p-3.5 bg-emerald-50 text-emerald-600 rounded-2xl">
+                    <div class="p-3.5 bg-emerald-100 text-emerald-600 rounded-2xl shadow-sm">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 3h13.5m-13.5-6h13.5m-13.5-3h13.5m-13.5-3H9m-3.75 15H18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0018 3H6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 006 18z" />
                         </svg>
@@ -156,7 +161,7 @@ new #[Layout('layouts.app')] class extends Component
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
                 <!-- Left panel: Add User Form -->
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 p-6 h-fit space-y-6">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 border-t-4 border-t-indigo-500 p-6 h-fit space-y-6">
                     <div>
                         <h3 class="font-extrabold text-slate-800 text-lg">Tambah User Baru</h3>
                         <p class="text-xs text-slate-400 mt-0.5">Buat akun untuk akses internal sistem</p>
@@ -239,7 +244,7 @@ new #[Layout('layouts.app')] class extends Component
                 <div class="lg:col-span-2 space-y-5">
                     
                     <!-- Search & Stats Bar -->
-                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 p-4 flex items-center justify-between gap-4">
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 border-t-4 border-t-indigo-500 p-4 flex items-center justify-between gap-4">
                         <div class="relative w-full max-w-md">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
                                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -255,7 +260,7 @@ new #[Layout('layouts.app')] class extends Component
                     </div>
 
                     <!-- Users Table Card -->
-                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 overflow-hidden">
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100/80 border-t-4 border-t-emerald-500 overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-slate-600">
                                 <thead>
