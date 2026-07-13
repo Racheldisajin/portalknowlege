@@ -87,13 +87,14 @@ new #[Layout('layouts.app')] class extends Component
             <!-- Statistics Row -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Stat Card 1 -->
-                <div class="bg-gradient-to-br from-indigo-50/70 via-white to-white rounded-2xl shadow-sm border border-indigo-100 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
+                <div style="background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%); border: 1px solid #4338ca; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);" 
+                     class="rounded-2xl p-5 flex items-center justify-between hover:shadow-md transition duration-200">
                     <div class="space-y-1">
-                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Total Pengguna</span>
-                        <div class="text-3xl font-black text-indigo-600">{{ \App\Models\User::count() }}</div>
-                        <p class="text-xs text-slate-500 font-medium">Akun terdaftar dalam sistem</p>
+                        <span style="color: #c7d2fe;" class="text-[10px] font-bold uppercase tracking-widest">Total Pengguna</span>
+                        <div style="color: #ffffff;" class="text-3xl font-black">{{ \App\Models\User::count() }}</div>
+                        <p style="color: #e0e7ff;" class="text-xs font-medium">Akun terdaftar dalam sistem</p>
                     </div>
-                    <div class="p-3.5 bg-indigo-100 text-indigo-600 rounded-2xl shadow-sm">
+                    <div style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff;" class="p-3.5 rounded-2xl shadow-inner">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                         </svg>
@@ -101,16 +102,17 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
 
                 <!-- Stat Card 2 -->
-                <div class="bg-gradient-to-br from-rose-50/70 via-white to-white rounded-2xl shadow-sm border border-rose-100 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
+                <div style="background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%); border: 1px solid #be123c; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.15);"
+                     class="rounded-2xl p-5 flex items-center justify-between hover:shadow-md transition duration-200">
                     <div class="space-y-1">
-                        <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">Metode Registrasi</span>
-                        <div class="text-lg font-black text-rose-600 flex items-center gap-1.5 pt-1">
-                            <span class="h-2 w-2 rounded-full bg-rose-500"></span>
-                            Tertutup (Admin Only)
+                        <span style="color: #fecdd3;" class="text-[10px] font-bold uppercase tracking-widest">Metode Registrasi</span>
+                        <div style="color: #ffffff;" class="text-lg font-black flex items-center gap-1.5 pt-1">
+                            <span class="h-2 w-2 rounded-full bg-white animate-pulse"></span>
+                            Tertutup (Admin)
                         </div>
-                        <p class="text-xs text-slate-500 font-medium">Hanya admin yang dapat mendaftarkan</p>
+                        <p style="color: #ffe4e6;" class="text-xs font-medium">Registrasi publik dinonaktifkan</p>
                     </div>
-                    <div class="p-3.5 bg-rose-100 text-rose-600 rounded-2xl shadow-sm">
+                    <div style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff;" class="p-3.5 rounded-2xl shadow-inner">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                         </svg>
@@ -118,16 +120,17 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
 
                 <!-- Stat Card 3 -->
-                <div class="bg-gradient-to-br from-emerald-50/70 via-white to-white rounded-2xl shadow-sm border border-emerald-100 p-5 flex items-center justify-between hover:shadow-md transition duration-200">
+                <div style="background: linear-gradient(135deg, #059669 0%, #065f46 100%); border: 1px solid #047857; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.15);"
+                     class="rounded-2xl p-5 flex items-center justify-between hover:shadow-md transition duration-200">
                     <div class="space-y-1">
-                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Aktivitas Sistem</span>
-                        <div class="text-lg font-black text-emerald-600 flex items-center gap-1.5 pt-1">
-                            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span style="color: #a7f3d0;" class="text-[10px] font-bold uppercase tracking-widest">Aktivitas Sistem</span>
+                        <div style="color: #ffffff;" class="text-lg font-black flex items-center gap-1.5 pt-1">
+                            <span class="h-2 w-2 rounded-full bg-white animate-ping"></span>
                             Online & Secure
                         </div>
-                        <p class="text-xs text-slate-500 font-medium">Bekerja pada database internal</p>
+                        <p style="color: #ecfdf5;" class="text-xs font-medium">Koneksi database internal aman</p>
                     </div>
-                    <div class="p-3.5 bg-emerald-100 text-emerald-600 rounded-2xl shadow-sm">
+                    <div style="background-color: rgba(255, 255, 255, 0.15); color: #ffffff;" class="p-3.5 rounded-2xl shadow-inner">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 3h13.5m-13.5-6h13.5m-13.5-3h13.5m-13.5-3H9m-3.75 15H18a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0018 3H6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 006 18z" />
                         </svg>
