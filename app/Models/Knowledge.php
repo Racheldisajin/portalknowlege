@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[Fillable(['title', 'text', 'file_path'])]
 class Knowledge extends Model
 {
+    protected $fillable = [
+        'title',
+        'text',
+        'file_path',
+    ];
+
     public function domains(): BelongsToMany
     {
         return $this->belongsToMany(Domain::class);
